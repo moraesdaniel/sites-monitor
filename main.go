@@ -3,17 +3,10 @@ package main
 import "fmt"
 
 func main() {
-	version := 1.0
 
-	fmt.Println("Welcome to the WebSites Monitor version", version)
-	fmt.Println("1 - Start monitoring")
-	fmt.Println("2 - Show logs")
-	fmt.Println("0 - Exit")
+	showMenu()
 
-	var menuOption int
-
-	fmt.Scan(&menuOption) //The simbol "&" means that menuOption is a pointer of memory
-	fmt.Println("The menu you chose is", menuOption)
+	menuOption := getChosenOption()
 
 	if menuOption == 1 {
 		fmt.Println("Starting monitoring...")
@@ -24,4 +17,19 @@ func main() {
 	} else {
 		fmt.Println("Invalid option!")
 	}
+}
+
+func showMenu() {
+	version := 1.0
+
+	fmt.Println("Welcome to the WebSites Monitor version", version)
+	fmt.Println("1 - Start monitoring")
+	fmt.Println("2 - Show logs")
+	fmt.Println("0 - Exit")
+}
+
+func getChosenOption() int {
+	var menuOption int
+	fmt.Scan(&menuOption) //The simbol "&" means that menuOption is a pointer of memory
+	return menuOption
 }
