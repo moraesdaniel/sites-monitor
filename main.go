@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 func main() {
 
@@ -14,8 +17,10 @@ func main() {
 		fmt.Println("Showing logs...")
 	} else if menuOption == 0 {
 		fmt.Println("Exiting...")
+		os.Exit(0)
 	} else {
 		fmt.Println("Invalid option!")
+		os.Exit(-1)
 	}
 }
 
