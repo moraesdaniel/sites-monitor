@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 )
 
-const qtyMonitoring = 5
+const qtyMonitoring = 3
 const secondsToSleep = 10
 
 func main() {
@@ -46,9 +50,9 @@ func getChosenOption() int {
 }
 
 func startMonitoring() {
-	fmt.Println("Starting monitoring...")
+	fmt.Println("Starting monitoring " + strconv.Itoa(qtyMonitoring) + "x...")
 
-	websites := []string{"https://random-status-code.herokuapp.com/", "https://www.google.com.br", "https://www.uol.com.br"}
+	websites := getSitesFromFile("./websites.txt")
 
 	for loop := 0; loop < qtyMonitoring; loop++ {
 		for _, site := range websites {
@@ -59,10 +63,47 @@ func startMonitoring() {
 }
 
 func testWebsite(site string) {
-	response, _ := http.Get(site)
+	response, err := http.Get(site)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
 	if response.StatusCode == 200 {
 		fmt.Println("Website", site, "loaded successfully!")
 	} else {
 		fmt.Println("Website", site, "has a problem! Status code:", response.StatusCode)
 	}
+}
+
+func getSitesFromFile(fileName string) []string {
+	var websites []string
+
+	fileContent, err := os.Open(fileName)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	reader := bufio.NewReader(fileContent)
+
+	for {
+		site, err := reader.ReadString('\n')
+		site = strings.TrimSpace(site)
+
+		if err != nil && err != io.EOF {
+			fmt.Println("Error:", err)
+		}
+
+		websites = append(websites, site)
+
+		if err == io.EOF {
+			break
+		}
+	}
+
+	fileContent.Close()
+
+	return websites
 }
