@@ -4,7 +4,11 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 )
+
+const qtyMonitoring = 5
+const secondsToSleep = 10
 
 func main() {
 	for {
@@ -46,8 +50,11 @@ func startMonitoring() {
 
 	websites := []string{"https://random-status-code.herokuapp.com/", "https://www.google.com.br", "https://www.uol.com.br"}
 
-	for _, site := range websites {
-		testWebsite(site)
+	for loop := 0; loop < qtyMonitoring; loop++ {
+		for _, site := range websites {
+			testWebsite(site)
+		}
+		time.Sleep(secondsToSleep * time.Second)
 	}
 }
 
