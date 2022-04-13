@@ -28,7 +28,7 @@ func main() {
 
 func showMenu() {
 	version := 1.0
-
+	fmt.Println("##########################################")
 	fmt.Println("Welcome to the WebSites Monitor version", version)
 	fmt.Println("1 - Start monitoring")
 	fmt.Println("2 - Show logs")
@@ -43,7 +43,15 @@ func getChosenOption() int {
 
 func startMonitoring() {
 	fmt.Println("Starting monitoring...")
-	site := "https://random-status-code.herokuapp.com/"
+
+	websites := []string{"https://random-status-code.herokuapp.com/", "https://www.google.com.br", "https://www.uol.com.br"}
+
+	for _, site := range websites {
+		testWebsite(site)
+	}
+}
+
+func testWebsite(site string) {
 	response, _ := http.Get(site)
 	if response.StatusCode == 200 {
 		fmt.Println("Website", site, "loaded successfully!")
