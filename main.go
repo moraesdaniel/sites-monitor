@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
@@ -13,6 +14,7 @@ import (
 
 const qtyMonitoring = 3
 const secondsToSleep = 10
+const fileLogPath = "./output.log"
 
 func main() {
 	for {
@@ -24,6 +26,7 @@ func main() {
 			startMonitoring()
 		} else if menuOption == 2 {
 			fmt.Println("Showing logs...")
+			printLogs(fileLogPath)
 		} else if menuOption == 0 {
 			fmt.Println("Exiting...")
 			os.Exit(0)
@@ -72,8 +75,10 @@ func testWebsite(site string) {
 
 	if response.StatusCode == 200 {
 		fmt.Println("Website", site, "loaded successfully!")
+		writeLog(fileLogPath, "Website "+site+" loaded successfully!")
 	} else {
 		fmt.Println("Website", site, "has a problem! Status code:", response.StatusCode)
+		writeLog(fileLogPath, "Website "+site+" has a problem! Status code: "+strconv.Itoa(response.StatusCode))
 	}
 }
 
@@ -106,4 +111,28 @@ func getSitesFromFile(fileName string) []string {
 	fileContent.Close()
 
 	return websites
+}
+
+func writeLog(filePath string, logMessage string) {
+	filePointer, err := os.OpenFile(filePath, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	thisMoment := time.Now()
+
+	filePointer.WriteString(thisMoment.Format("02/01/2006 15:04:05") + " - " + logMessage + "\n")
+
+	filePointer.Close()
+}
+
+func printLogs(filePath string) {
+	fileContent, err := ioutil.ReadFile(filePath)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+	}
+
+	fmt.Println(string(fileContent))
 }
