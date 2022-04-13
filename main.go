@@ -2,25 +2,27 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 )
 
 func main() {
+	for {
+		showMenu()
 
-	showMenu()
+		menuOption := getChosenOption()
 
-	menuOption := getChosenOption()
-
-	if menuOption == 1 {
-		fmt.Println("Starting monitoring...")
-	} else if menuOption == 2 {
-		fmt.Println("Showing logs...")
-	} else if menuOption == 0 {
-		fmt.Println("Exiting...")
-		os.Exit(0)
-	} else {
-		fmt.Println("Invalid option!")
-		os.Exit(-1)
+		if menuOption == 1 {
+			startMonitoring()
+		} else if menuOption == 2 {
+			fmt.Println("Showing logs...")
+		} else if menuOption == 0 {
+			fmt.Println("Exiting...")
+			os.Exit(0)
+		} else {
+			fmt.Println("Invalid option!")
+			os.Exit(-1)
+		}
 	}
 }
 
@@ -37,4 +39,15 @@ func getChosenOption() int {
 	var menuOption int
 	fmt.Scan(&menuOption) //The simbol "&" means that menuOption is a pointer of memory
 	return menuOption
+}
+
+func startMonitoring() {
+	fmt.Println("Starting monitoring...")
+	site := "https://random-status-code.herokuapp.com/"
+	response, _ := http.Get(site)
+	if response.StatusCode == 200 {
+		fmt.Println("Website", site, "loaded successfully!")
+	} else {
+		fmt.Println("Website", site, "has a problem! Status code:", response.StatusCode)
+	}
 }
